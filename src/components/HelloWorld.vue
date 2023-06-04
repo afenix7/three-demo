@@ -1,18 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useScene } from '../hooks/useScene';
+import { ref, onMounted } from 'vue'
+import { useScene } from '../hooks/useScene'
+import { BoxGeometry, MeshBasicMaterial, Mesh, AxesHelper } from 'three'
 
-defineProps<{ msg: string }>()
-const [scene,renderer,camera] = useScene('#root',{})
-const count = ref(0)
+defineProps<{}>()
+onMounted(() => {
+  const [scene, renderer, camera] = useScene(
+    'body'
+  )
+
+})
 </script>
 
 <template>
- <div id="root"></div>
+  <div id="root"></div>
 </template>
 
 <style scoped>
-.read-the-docs {
-  color: #888;
+#root {
+  width: 100%;
+  height: 100%;
 }
 </style>
