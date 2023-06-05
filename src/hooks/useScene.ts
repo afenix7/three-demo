@@ -14,34 +14,40 @@ interface Config {
   height?: number
 }
 
+interface Context {
+  renderer: Renderer
+  scene: Scene
+  camera: Camera
+}
+
 export const useScene = (selector?: string, config?: Config) => {
   const el = selector ? document.querySelector(selector) : document.body
-  if (!el) return [null, null, null]
+  if (!el) return []
   const width = config?.width || el.clientWidth
   const height = config?.height || el.clientHeight
-  const scene = reactive(new Scene())
-  const renderer = reactive(new WebGLRenderer({ antialias: true }))
-  const camera = reactive(
-    new PerspectiveCamera(
+  const context = {
+    renderer: new WebGLRenderer({ antialias: true }),
+    scene: new Scene(),
+    camera: new PerspectiveCamera(
       config?.fov || 75,
       el.clientWidth / el.clientHeight,
-      1,
+      0.1,
       1000
     )
-  )
-  renderer.setClearColor(new Color(1, 1, 1))
-  renderer.setPixelRatio(window.devicePixelRatio)
-  renderer.setSize(width, height)
-  el.appendChild(renderer.domElement)
+  }
+  context.renderer.setClearColor(new Color(1, 1, 1))
+  context.renderer.setPixelRatio(window.devicePixelRatio)
+  context.renderer.setSize(width, height)
+  el.appendChild(context.renderer.domElement)
   const render = () => {
-    renderer.render(scene, camera)
+    context.renderer.render(context.scene, context.camera)
     requestAnimationFrame(render)
   }
   window.addEventListener('resize', () => {
-    camera.aspect = el.clientWidth / el.clientHeight
-    camera.updateProjectionMatrix()
-    renderer.setSize(el.clientWidth, el.clientHeight)
+    context.camera.aspect = el.clientWidth / el.clientHeight
+    context.camera.updateProjectionMatrix()
+    context.renderer.setSize(el.clientWidth, el.clientHeight)
   })
-  render()
-  return [scene, renderer, camera]
+  // render()
+  return [context, render]
 }

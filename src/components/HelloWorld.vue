@@ -5,10 +5,25 @@ import { BoxGeometry, MeshBasicMaterial, Mesh, AxesHelper } from 'three'
 
 defineProps<{}>()
 onMounted(() => {
-  const [scene, renderer, camera] = useScene(
-    'body'
-  )
-
+  const [context, render] = useScene('body')
+  const axes = new AxesHelper(20)
+  context.scene.add(axes)
+  const cubeGeometry = new BoxGeometry(1, 1, 1)
+  const cubeMaterial = new MeshBasicMaterial({
+    color: 0xff0000
+    // wireframe: true
+  })
+  const cube = new Mesh(cubeGeometry, cubeMaterial)
+  //cube.rotation.x=-0.5*Math.PI
+  cube.position.x = 0
+  cube.position.y = 0
+  cube.position.z = 0
+  context.scene.add(cube)
+  context.camera.position.z = 5
+  context.camera.position.y = 10
+  context.camera.lookAt(cube.position)
+  console.log(context.scene)
+  render()
 })
 </script>
 
